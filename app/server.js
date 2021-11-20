@@ -2,12 +2,13 @@
 const dotenv = require("dotenv");
 const express = require("express");
 const bodyParser = require("body-parser");
+const moment = require("moment");
 
 // Enable dotenv
 dotenv.config();
 
 // Setup
-const PORT = 7070;
+const PORT = 3030;
 
 // Setup Express
 const app = express();
@@ -35,7 +36,7 @@ app.get("/", async (req, res) => {
                 client_secret: process.env.CLIENT_SECRET,
                 grant_type: "authorization_code",
                 code: codeQuery,
-                redirect_uri: "http://localhost:7070/",
+                redirect_uri: "http://localhost:3030/",
             })
             .catch((err) => {
                 if (err.error === "invalid_grant") {
@@ -52,6 +53,7 @@ app.get("/", async (req, res) => {
                     );
                 }
             });
+            console.log(codeQuery);
     }
 
     const token = await cronofyClient
@@ -59,7 +61,7 @@ app.get("/", async (req, res) => {
             version: "1",
             permissions: ["managed_availability", "account_management"],
             subs: [process.env.SUB],
-            origin: "http://localhost:7070",
+            origin: "http://localhost:3030",
         })
         .catch(() => {
             console.error(
@@ -84,7 +86,7 @@ app.get("/availability", async (req, res) => {
             version: "1",
             permissions: ["availability"],
             subs: [process.env.SUB],
-            origin: "http://localhost:7070",
+            origin: "http://localhost:3030",
         })
         .catch(() => {
             console.error(
@@ -136,4 +138,4 @@ app.get("/submit", async (req, res) => {
 });
 
 app.listen(PORT);
-console.log("serving on http://localhost:7070");
+console.log("serving on http://localhost:3030");
